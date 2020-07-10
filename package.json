@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ZenigameSHOOT/CMSDcard-back/issues"
   },
-  "homepage": "https://github.com/ZenigameSHOOT/CMSDcard-back#readme"
+  "homepage": "https://github.com/ZenigameSHOOT/CMSDcard-back#readme",
+  "dependencies": {
+    "mongoose": "^5.9.22"
+  }
 }
