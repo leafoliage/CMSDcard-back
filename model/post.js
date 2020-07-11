@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const { ObjectId } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema.Types
 
 const PostSchema = new mongoose.Schema({
     id: { type: ObjectId },
@@ -10,6 +10,6 @@ const PostSchema = new mongoose.Schema({
     likeId: { type: [ObjectId] },
     dislikeId: { type: [ObjectId] },
     comment: { type: [Object] }
-});
+})
 
-module.exports = mongoose.model('Post', PostSchema);
+module.exports = mongoose.model('Post', PostSchema)
