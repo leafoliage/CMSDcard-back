@@ -1,0 +1,8 @@
+.env
+
+node_modules/*
+!node_modules/jsdoc
+node_modules/jsdoc/*
+!node_modules/jsdoc/plugins
+node_modules/jsdoc/plugins/*
+!node_modules/jsdoc/plugins/jsdoc-plugin-mongoose
