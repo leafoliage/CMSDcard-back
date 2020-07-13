@@ -25,7 +25,7 @@ api.put('/user/:id', async (req, res) => {
 api.delete('/user/:id', async (req, res) => {
     await UserModel.findByIdAndDelete(req.params.id)
         .then(data => { res.send(data) })
-        .catch(err => {res.status(500).send(err)})
+        .catch(err => { res.status(500).send(err) })
 })
 
 module.exports = api
