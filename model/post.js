@@ -3,14 +3,12 @@ const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Schema.Types
 
 const PostSchema = new mongoose.Schema({
-    id: { type: ObjectId },
-    author: { type: ObjectId },
+    author: { type: ObjectId, required: true },
     title: { type: String },
     content: { type: String },
-    postTime: { type: Date },
-    likeId: { type: [ObjectId] },
-    dislikeId: { type: [ObjectId] },
-    comment: { type: [Object] }
+    postTime: { type: Date, default: new Date() },
+    likeIds: { type: [ObjectId] },
+    // comment: { type: [Object] }
 })
 
 module.exports = mongoose.model('Post', PostSchema)
