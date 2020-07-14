@@ -1,8 +1,10 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const userAPI = require('./api/userAPI')
 const app = express()
 require('dotenv').config()
+
+const userAPI = require('./api/userAPI')
+const postAPI = require('./api/postAPI')
 
 app.use(express.json())
 
@@ -11,5 +13,6 @@ const url = `mongodb+srv://${process.env.db_user}:${process.env.db_pass}@firstmo
 mongoose.connect(url)
 
 app.use(userAPI)
+app.use(postAPI)
 
 app.listen(6001, () => {console.log('server listening on 6001')})
