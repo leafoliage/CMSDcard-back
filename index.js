@@ -6,7 +6,7 @@ require('dotenv').config()
 
 app.use(express.json())
 
-const url = `mongodb+srv://${process.env.db_user}:${process.env.db_pass}@firstmongo-3qdnz.mongodb.net/${process.env.db_name}CMSDcard?retryWrites=true&w=majority`
+const url = `mongodb+srv://${process.env.db_user}:${process.env.db_pass}@firstmongo-3qdnz.mongodb.net/${process.env.db_name}?retryWrites=true&w=majority`
 
 mongoose.connect(url)
 
