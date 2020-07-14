@@ -7,6 +7,7 @@ const PostSchema = new mongoose.Schema({
     author: { type: ObjectId },
     title: { type: String },
     content: { type: String },
+    postTime: { type: Date },
     likeId: { type: [ObjectId] },
     dislikeId: { type: [ObjectId] },
     comment: { type: [Object] }
