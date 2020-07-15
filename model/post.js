@@ -8,7 +8,6 @@ const PostSchema = new mongoose.Schema({
     content: { type: String },
     postTime: { type: Date, default: new Date() },
     likeIds: { type: [ObjectId] },
-    // comment: { type: [Object] }
 })
 
 module.exports = mongoose.model('Post', PostSchema)
