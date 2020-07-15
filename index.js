@@ -5,6 +5,7 @@ require('dotenv').config()
 
 const userAPI = require('./api/userAPI')
 const postAPI = require('./api/postAPI')
+const commentAPI = require('./api/commentAPI')
 
 app.use(express.json())
 
@@ -14,5 +15,6 @@ mongoose.connect(url)
 
 app.use(userAPI)
 app.use(postAPI)
+app.use(commentAPI)
 
 app.listen(6001, () => {console.log('server listening on 6001')})
