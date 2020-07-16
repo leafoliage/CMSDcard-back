@@ -22,11 +22,8 @@ api.put('/post/:id', async (req, res) => {
         .catch(err => { res.status(500).send(err) })
 })
 
-api.put('/post/:postId/like/:userId', async (req, res) => {
-    let post = await PostModel.findById(req.params.postId)
-    post.likeIds.push(req.params.userId)
-
-    return await post.save()
+api.put('/post/like/:postId', async (req, res) => {
+    return await PostModel.findByIdAndUpdate(req.params.postId, { $push: { likeIds: req.body.userId } })
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
