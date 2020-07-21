@@ -1,5 +1,6 @@
 const express = require('express')
 const CommentModel = require('../model/comment')
+const UserModel = require('../model/user')
 const api = express()
 
 api.get('/comment/single/:id', async (req, res) => {
@@ -15,9 +16,17 @@ api.get('/comment/post/:postId', async (req, res) => {
 })
 
 api.post('/comment', async (req, res) => {
-    const comment = new CommentModel(req.body)
+    const user = await UserModel.findById(req.body.authorId)
+        .catch(err => { res.status(500).send(err) })
 
-    return await comment.save()
+    let comment = {
+        authorId: req.body.authorId,
+        authorName: user.name,
+        targetPost: req.body.targetPost,
+        content: req.body.content,
+    }
+
+    return await CommentModel.create(comment)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })

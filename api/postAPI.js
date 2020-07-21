@@ -1,5 +1,6 @@
 const express = require('express')
 const PostModel = require('../model/post')
+const UserModel = require('../model/user')
 const api = express()
 
 api.get('/post/:id', async (req, res) => {
@@ -8,10 +9,25 @@ api.get('/post/:id', async (req, res) => {
         .catch(err => { res.status(500).send(err) })
 })
 
-api.post('/post', async (req, res) => {
-    const post = new PostModel(req.body)
+api.get('/post/select/hot', async (req, res) => {
+    return await PostModel.find()
+        .then(data => { res.send(data) })
+        .catch(err => { res.status(500).send(err) })
+})
 
-    return await post.save()
+api.post('/post', async (req, res) => {
+    const user = await UserModel.findById(req.body.authorId)
+        .catch(err => { res.status(500).send(err) })
+
+    let post = {
+        authorId: req.body.authorId,
+        authorName: user.name,
+        title: req.body.title,
+        content: req.body.content,
+        likeIds: req.body.likeIds
+    }
+
+    return await PostModel.create(post)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
