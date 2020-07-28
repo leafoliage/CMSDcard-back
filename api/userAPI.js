@@ -10,13 +10,13 @@ api.get('/user/:id', async (req, res) => {
 })
 
 api.post('/user', async (req, res) => {
-    const user = new UserModel(req.body)
-
-    if (user.password) {
-        user.password = SHA256(user.password)
+    let user = {
+        name: req.body.name,
+        email: req.body.email,
+        password: SHA256(req.body.password)
     }
 
-    return await user.save()
+    return await UserModel.create(user)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
