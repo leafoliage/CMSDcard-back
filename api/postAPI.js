@@ -10,7 +10,7 @@ api.get('/post/:id', async (req, res) => {
 })
 
 api.get('/post/select/hot', async (req, res) => {
-    return await PostModel.find().sort({ likeNum: -1 })
+    return await PostModel.find().sort({ likeNum: -1 }).limit(5)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
