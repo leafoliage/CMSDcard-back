@@ -10,7 +10,13 @@ api.get('/post/:id', async (req, res) => {
 })
 
 api.get('/post/select/hot', async (req, res) => {
-    return await PostModel.find()
+    return await PostModel.find().sort({ likeNum: -1 })
+        .then(data => { res.send(data) })
+        .catch(err => { res.status(500).send(err) })
+})
+
+api.get('/post/select/new', async (req, res) => {
+    return await PostModel.find().sort({ postTime: -1 })
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
@@ -39,7 +45,8 @@ api.put('/post/:id', async (req, res) => {
 })
 
 api.put('/post/like/:postId', async (req, res) => {
-    return await PostModel.findByIdAndUpdate(req.params.postId, { $push: { likeIds: req.body.userId } })
+
+    return await PostModel.findByIdAndUpdate(req.params.postId, { $push: { likeIds: req.body.userId }, $inc: { likeNum: 1 } })
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
