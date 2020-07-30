@@ -16,7 +16,7 @@ api.get('/post/select/hot', async (req, res) => {
 })
 
 api.get('/post/select/new', async (req, res) => {
-    return await PostModel.find().sort({ postTime: -1 })
+    return await PostModel.find().sort({ postTime: -1 }).limit(10)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
