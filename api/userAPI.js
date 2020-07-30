@@ -1,5 +1,5 @@
 const express = require('express')
-const { SHA256 } = require('crypto-js')
+const crypto = require('crypto')
 const UserModel = require('../model/user')
 const api = express()
 
@@ -10,10 +10,14 @@ api.get('/user/:id', async (req, res) => {
 })
 
 api.post('/user', async (req, res) => {
+    const salt = crypto.randomBytes(16).toString('base64')
+    const password = crypto.createHash('sha256').update(req.body.password + salt).digest('base64')
+
     let user = {
         name: req.body.name,
         email: req.body.email,
-        password: SHA256(req.body.password)
+        password,
+        salt
     }
 
     return await UserModel.create(user)
@@ -22,8 +26,10 @@ api.post('/user', async (req, res) => {
 })
 
 api.put('/user/:id', async (req, res) => {
+    const user = await UserModel.findById(req.params.id)
+
     if (req.body.password) {
-        req.body.password = SHA256(req.body.password)
+        req.body.password = crypto.createHash('sha256').update(req.body.password + user.salt).digest('base64')
     }
 
     return await UserModel.findByIdAndUpdate(req.params.id, req.body)
