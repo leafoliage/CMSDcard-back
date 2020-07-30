@@ -4,9 +4,14 @@ const UserModel = require('../model/user')
 const api = express()
 
 api.get('/user/:id', async (req, res) => {
-    return await UserModel.findById(req.params.id)
-        .then(data => { res.send(data) })
+    const user = await UserModel.findById(req.params.id)
         .catch(err => { res.status(500).send(err) })
+
+    if (!user) {
+        res.status(404).send('User not found')
+    }
+
+    return res.send(user)
 })
 
 api.post('/user', async (req, res) => {
@@ -27,6 +32,9 @@ api.post('/user', async (req, res) => {
 
 api.put('/user/:id', async (req, res) => {
     const user = await UserModel.findById(req.params.id)
+    if (!user) {
+        res.status(404).send('User not found')
+    }
 
     if (req.body.password) {
         req.body.password = crypto.createHash('sha256').update(req.body.password + user.salt).digest('base64')
