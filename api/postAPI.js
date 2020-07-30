@@ -30,6 +30,7 @@ api.post('/post', async (req, res) => {
         authorName: user.name,
         title: req.body.title,
         content: req.body.content,
+        postTime: new Date(),
         likeIds: req.body.likeIds
     }
 
