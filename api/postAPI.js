@@ -1,32 +1,33 @@
 const express = require('express')
 const PostModel = require('../model/post')
 const UserModel = require('../model/user')
+const authenticateToken = require('./auth')
 const api = express()
 
-api.get('/post/:id', async (req, res) => {
+api.get('/post/:id', authenticateToken, async (req, res) => {
     return await PostModel.findById(req.params.id)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
 
-api.get('/post/select/hot', async (req, res) => {
+api.get('/post/select/hot', authenticateToken, async (req, res) => {
     return await PostModel.find().sort({ likeNum: -1 }).limit(5)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
 
-api.get('/post/select/new', async (req, res) => {
+api.get('/post/select/new', authenticateToken, async (req, res) => {
     return await PostModel.find().sort({ postTime: -1 }).limit(10)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
 
-api.post('/post', async (req, res) => {
-    const user = await UserModel.findById(req.body.authorId)
+api.post('/post', authenticateToken, async (req, res) => {
+    const user = await UserModel.findById(req.currUser.userId)
         .catch(err => { res.status(500).send(err) })
 
     let post = {
-        authorId: req.body.authorId,
+        authorId: req.currUser.userId,
         authorName: user.name,
         title: req.body.title,
         content: req.body.content,
@@ -45,9 +46,8 @@ api.put('/post/:id', async (req, res) => {
         .catch(err => { res.status(500).send(err) })
 })
 
-api.put('/post/like/:postId', async (req, res) => {
-
-    return await PostModel.findByIdAndUpdate(req.params.postId, { $push: { likeIds: req.body.userId }, $inc: { likeNum: 1 } })
+api.put('/post/like/:postId', authenticateToken, async (req, res) => {
+    return await PostModel.findByIdAndUpdate(req.params.postId, { $push: { likeIds: req.currUser.userId }, $inc: { likeNum: 1 } })
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
