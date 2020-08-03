@@ -1,5 +1,4 @@
 const express = require('express')
-const crypto = require('crypto')
 const bcrypt = require('bcrypt')
 const UserModel = require('../model/user')
 const api = express()
