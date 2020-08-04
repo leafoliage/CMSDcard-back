@@ -2,6 +2,7 @@ const express = require('express')
 const bcrypt = require('bcrypt')
 const api = express()
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
 const UserModel = require('../model/user')
 
 api.get('/user/:id', async (req, res) => {
@@ -19,7 +20,8 @@ api.get('/user/:id', async (req, res) => {
 
 api.post('/user/register', async (req, res) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        const tempPassword = crypto.randomBytes(6).toString('base64')
+        const hashedPassword = await bcrypt.hash(tempPassword, 10)
 
         if (await UserModel.findOne({ email: req.body.email })) {
             return res.status(400).send('Email already used')
