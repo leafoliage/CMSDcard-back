@@ -4,6 +4,7 @@ const api = express()
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const UserModel = require('../model/user')
+const sendRegisterEmail = require('../functions/registerEmail')
 
 api.get('/user/:id', async (req, res) => {
     try {
@@ -36,6 +37,8 @@ api.post('/user/register', async (req, res) => {
         }
 
         const data = await UserModel.create(user)
+
+        sendRegisterEmail(req.body.name, req.body.email, tempPassword)
         return res.status(201).send(data)
     } catch (err) {
         return res.status(500).send(err.message)

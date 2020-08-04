@@ -2,7 +2,7 @@ const mailer = require('nodemailer')
 
 const transport = mailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 587,
+    port: 465,
     auth: {
         user: process.env.email_add,
         pass: process.env.email_pass,
@@ -11,17 +11,15 @@ const transport = mailer.createTransport({
 
 function sendRegisterEmail(name, email, tempPassword) {
     const content = `
-        <h2>${name}, 歡迎~</h2>
+        <h2>哈囉, ${name}, 歡迎你~</h2>
         <p>感謝您註冊協同學生意見平台!</p>
         <p>這是您的暫時密碼: 
-            <strong>${tempPassword}</strong>
-        </p>
-        <p>建議您盡快修改!
-            <br />
-            <a href="">前往修改密碼</a>
+            <strong>${tempPassword}</strong><br />
+            建議您盡快修改!<br />
+            <a href="google.com">前往修改密碼</a>
         </p>
         <p>祝您使用愉快!</p>
-        <p>CMSForum敬上</p>
+        <p>CMSForum團隊 敬上</p>
     `
 
     const mailOptions = {
@@ -29,7 +27,7 @@ function sendRegisterEmail(name, email, tempPassword) {
         to: email,
         subject: '註冊成功',
         generateTextFromHTML: true,
-        text: content
+        html: content
     }
 
     transport.sendMail(mailOptions, (err, info) => {
