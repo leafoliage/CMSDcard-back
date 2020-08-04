@@ -4,8 +4,8 @@ const transport = mailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
     auth: {
-        user: process.env.emailAdd,
-        pass: process.env.emailPass,
+        user: process.env.email_add,
+        pass: process.env.email_pass,
     }
 })
 
