@@ -21,11 +21,9 @@ api.post('/user/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
-        if (await UserModel.find({ email: req.body.email })) {
-            console.log('detected email double used')
+        if (await UserModel.findOne({ email: req.body.email })) {
             return res.status(400).send('Email already used')
-        } else if (await UserModel.find({ name: req.body.name })) {
-            console.log('detected name double used')
+        } else if (await UserModel.findOne({ name: req.body.name })) {
             return res.status(400).send('Name already used')
         }
 
