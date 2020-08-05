@@ -15,15 +15,16 @@ api.get('/comment/post/:postId', async (req, res) => {
         .catch(err => { res.status(500).send(err) })
 })
 
-api.post('/comment', async (req, res) => {
+api.post('/comment/:postId', async (req, res) => {
     const user = await UserModel.findById(req.body.authorId)
         .catch(err => { res.status(500).send(err) })
 
     let comment = {
         authorId: req.body.authorId,
         authorName: user.name,
-        targetPost: req.body.targetPost,
+        targetPost: req.params.postId,
         content: req.body.content,
+        postTime: new Date()
     }
 
     return await CommentModel.create(comment)
