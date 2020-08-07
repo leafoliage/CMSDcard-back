@@ -47,7 +47,7 @@ api.put('/post/:id', async (req, res) => {
 })
 
 api.put('/post/like/:postId', authenticateToken, async (req, res) => {
-    return await PostModel.findByIdAndUpdate(req.params.postId, { $push: { likeIds: req.currUser.userId }, $inc: { likeNum: 1 } })
+    return await PostModel.findByIdAndUpdate(req.params.postId, { $addToSet: { likeIds: req.currUser.userId }, $inc: { likeNum: 1 } })
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err) })
 })
