@@ -48,9 +48,6 @@ api.post('/user/register', async (req, res) => {
 api.post('/user/login', async (req, res) => {
     try {
         const user = await UserModel.findOne({ email: req.body.email })
-        if (!user) {
-            return res.status(404).send('Did not find user')
-        }
 
         if (await bcrypt.compare(req.body.password, user.password)) {
             const data = { userId: user._id }
