@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
 const app = express()
 require('dotenv').config()
 
@@ -8,6 +9,7 @@ const postAPI = require('./api/postAPI')
 const commentAPI = require('./api/commentAPI')
 
 app.use(express.json())
+app.use(cors())
 
 const url = `mongodb+srv://${process.env.db_user}:${process.env.db_pass}@firstmongo-3qdnz.mongodb.net/${process.env.db_name}?retryWrites=true&w=majority`
 
