@@ -1,24 +1,35 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
-const UserModel = require('../model/user')
 const api = express()
+const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
+const UserModel = require('../model/user')
+const sendRegisterEmail = require('../functions/registerEmail')
+const authenticateToken = require('./auth')
 
-api.get('/user/:id', async (req, res) => {
+api.get('/user', authenticateToken, async (req, res) => {
     try {
-        const user = await UserModel.findById(req.params.id)
+        const user = await UserModel.findById(req.currUser.userId)
         if (!user) {
             res.status(404).send('User not found')
         }
 
-        res.status(200).send(user)
+        return res.status(200).send(user)
     } catch (err) {
-        res.status(500).send(err)
+        return res.status(500).send(err.message)
     }
 })
 
-api.post('/user', async (req, res) => {
+api.post('/user/register', async (req, res) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        const tempPassword = crypto.randomBytes(6).toString('base64')
+        const hashedPassword = await bcrypt.hash(tempPassword, 10)
+
+        if (await UserModel.findOne({ email: req.body.email })) {
+            return res.status(400).send('Email already used')
+        } else if (await UserModel.findOne({ name: req.body.name })) {
+            return res.status(400).send('Name already used')
+        }
 
         let user = {
             name: req.body.name,
@@ -27,34 +38,54 @@ api.post('/user', async (req, res) => {
         }
 
         const data = await UserModel.create(user)
-        res.status(201).send(data)
+
+        sendRegisterEmail(req.body.name, req.body.email, tempPassword)
+        return res.status(201).send(data)
     } catch (err) {
-        res.status(500).send(err)
+        return res.status(500).send(err.message)
     }
 })
 
-api.put('/user/:id', async (req, res) => {
+api.post('/user/login', async (req, res) => {
+    try {
+        const user = await UserModel.findOne({ email: req.body.email })
+
+        if (await bcrypt.compare(req.body.password, user.password)) {
+            const data = { userId: user._id }
+            const accessToken = jwt.sign(data, process.env.access_token_secret)
+            return res.json({ accessToken: accessToken })
+        } else {
+            return res.status(401).send('Login Fail')
+        }
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
+})
+
+api.put('/user', authenticateToken, async (req, res) => {
     try {
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, 10)
         }
 
-        const user = await UserModel.findByIdAndUpdate(req.params.id, req.body)
+        const user = await UserModel.findByIdAndUpdate(req.currUser.userId, req.body)
         if (!user) {
-            res.status(404).send('User not found')
+            return res.status(404).send('User not found')
         }
 
-        const data = await UserModel.findById(req.params.id)
-        res.status(200).send(data)
+        const data = await UserModel.findById(req.currUser.userId)
+        console.log('200:', new Date())
+        return res.status(200).send(data)
     } catch (err) {
-        res.status(500).send(err)
+        console.log('500:', new Date())
+        return res.status(500).send(err.message)
     }
 })
 
-// api.delete('/user/:id', async (req, res) => {
-//     return await UserModel.findByIdAndDelete(req.params.id)
-//         .then(data => { res.send(data) })
-//         .catch(err => { res.status(500).send(err) })
-// })
+api.delete('/user/:id', async (req, res) => {
+    return await UserModel.findByIdAndDelete(req.params.id)
+        .then(data => { res.send(data) })
+        .catch(err => { res.status(500).send(err.message) })
+})
 
 module.exports = api
