@@ -5,10 +5,11 @@ const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const UserModel = require('../model/user')
 const sendRegisterEmail = require('../functions/registerEmail')
+const authenticateToken = require('./auth')
 
-api.get('/user/:id', async (req, res) => {
+api.get('/user', authenticateToken, async (req, res) => {
     try {
-        const user = await UserModel.findById(req.params.id)
+        const user = await UserModel.findById(req.currUser.userId)
         if (!user) {
             res.status(404).send('User not found')
         }
@@ -61,20 +62,22 @@ api.post('/user/login', async (req, res) => {
     }
 })
 
-api.put('/user/:id', async (req, res) => {
+api.put('/user', authenticateToken, async (req, res) => {
     try {
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, 10)
         }
 
-        const user = await UserModel.findByIdAndUpdate(req.params.id, req.body)
+        const user = await UserModel.findByIdAndUpdate(req.currUser.userId, req.body)
         if (!user) {
             return res.status(404).send('User not found')
         }
 
-        const data = await UserModel.findById(req.params.id)
+        const data = await UserModel.findById(req.currUser.userId)
+        console.log('200:', new Date())
         return res.status(200).send(data)
     } catch (err) {
+        console.log('500:', new Date())
         return res.status(500).send(err.message)
     }
 })
