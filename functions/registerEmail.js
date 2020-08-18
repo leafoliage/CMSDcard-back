@@ -12,7 +12,7 @@ const transport = mailer.createTransport({
 function sendRegisterEmail(name, email, tempPassword) {
     const content = `
         <h2>哈囉, ${name}, 歡迎你~</h2>
-        <p>感謝您註冊協同學生意見平台!</p>
+        <p>感謝您註冊協同學生論壇!</p>
         <p>這是您的暫時密碼: 
             <strong>${tempPassword}</strong><br />
             建議您盡快修改!<br />
@@ -23,7 +23,7 @@ function sendRegisterEmail(name, email, tempPassword) {
     `
 
     const mailOptions = {
-        from: `"協同學生意見平台" <${process.env.emailAdd}>`,
+        from: `"協同學生論壇" <${process.env.emailAdd}>`,
         to: email,
         subject: '註冊成功',
         generateTextFromHTML: true,
