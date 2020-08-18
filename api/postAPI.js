@@ -5,57 +5,78 @@ const authenticateToken = require('./auth')
 const api = express()
 
 api.get('/post/:id', authenticateToken, async (req, res) => {
-    return await PostModel.findById(req.params.id)
-        .then(data => { res.send(data) })
-        .catch(err => { res.status(500).send(err) })
+    try {
+        const data = await PostModel.findById(req.params.id)
+        if (!data) res.sendStatus(404)
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
 })
 
 api.get('/post/select/hot', authenticateToken, async (req, res) => {
-    return await PostModel.find().sort({ likeNum: -1 }).limit(5)
-        .then(data => { res.send(data) })
-        .catch(err => { res.status(500).send(err) })
+    try {
+        const data = await PostModel.find().sort({ likeNum: -1 }).limit(5)
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
 })
 
 api.get('/post/select/new', authenticateToken, async (req, res) => {
-    return await PostModel.find().sort({ postTime: -1 }).limit(10)
-        .then(data => { res.send(data) })
-        .catch(err => { res.status(500).send(err) })
+    try {
+        const data = await PostModel.find().sort({ postTime: -1 }).limit(10)
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
 })
 
 api.post('/post', authenticateToken, async (req, res) => {
-    const user = await UserModel.findById(req.currUser.userId)
-        .catch(err => { res.status(500).send(err) })
+    try {
+        const user = await UserModel.findById(req.currUser.userId)
 
-    let post = {
-        authorId: req.currUser.userId,
-        authorName: user.name,
-        title: req.body.title,
-        content: req.body.content,
-        postTime: new Date(),
-        likeIds: req.body.likeIds
+        let post = {
+            authorId: req.currUser.userId,
+            authorName: user.name,
+            title: req.body.title,
+            content: req.body.content,
+            postTime: new Date(),
+            likeIds: req.body.likeIds
+        }
+
+        const data = await PostModel.create(post)
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
     }
-
-    return await PostModel.create(post)
-        .then(data => { res.send(data) })
-        .catch(err => { res.status(500).send(err) })
 })
 
 api.put('/post/:id', async (req, res) => {
-    return await PostModel.findByIdAndUpdate(req.params.id, req.body)
-        .then(data => { res.send(data) })
-        .catch(err => { res.status(500).send(err) })
+    try {
+        const data = await PostModel.findByIdAndUpdate(req.params.id, req.body)
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
 })
 
 api.put('/post/like/:postId', authenticateToken, async (req, res) => {
-    return await PostModel.findByIdAndUpdate(req.params.postId, { $addToSet: { likeIds: req.currUser.userId } })
-        .then(data => { res.send(data) })
-        .catch(err => { res.status(500).send(err) })
+    try {
+        const data = await PostModel.findByIdAndUpdate(req.params.postId, { $addToSet: { likeIds: req.currUser.userId } })
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
 })
 
-api.delete('/post/:id', async (req, res) => {
-    return await PostModel.findByIdAndDelete(req.params.id)
-        .then(data => { res.send(data) })
-        .catch(err => { res.status(500).send(err) })
+api.delete('/post/:id', authenticateToken, async (req, res) => {
+    try {
+        const data = await PostModel.findByIdAndDelete(req.params.id)
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
 })
 
 module.exports = api
