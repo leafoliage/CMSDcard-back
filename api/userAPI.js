@@ -74,10 +74,8 @@ api.put('/user', authenticateToken, async (req, res) => {
         }
 
         const data = await UserModel.findById(req.currUser.userId)
-        console.log('200:', new Date())
         return res.status(200).send(data)
     } catch (err) {
-        console.log('500:', new Date())
         return res.status(500).send(err.message)
     }
 })
