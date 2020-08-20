@@ -4,6 +4,8 @@ const api = express()
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const UserModel = require('../model/user')
+const CommentModel = require('../model/comment')
+const PostModel = require('../model/post')
 const sendRegisterEmail = require('../functions/registerEmail')
 const authenticateToken = require('./auth')
 
@@ -71,6 +73,11 @@ api.put('/user', authenticateToken, async (req, res) => {
         const user = await UserModel.findByIdAndUpdate(req.currUser.userId, req.body)
         if (!user) {
             return res.status(404).send('User not found')
+        }
+
+        if (req.body.name) {
+            await PostModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
+            await CommentModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
         }
 
         const data = await UserModel.findById(req.currUser.userId)
