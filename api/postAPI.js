@@ -34,7 +34,7 @@ api.get('/post/select/new', authenticateToken, async (req, res) => {
 
 api.put('/post/search', async (req, res) => {
     try {
-        const data = await PostModel.find({ content: { $regex: req.body.regex } }).sort({ postTime: -1 })
+        const data = await PostModel.find({ content: { $regex: req.body.regex, $options: 'i' } }).sort({ postTime: -1 })
         return res.status(200).send(data)
     } catch (err) {
         return res.status(500).send(err.message)
