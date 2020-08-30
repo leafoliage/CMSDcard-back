@@ -27,10 +27,14 @@ api.post('/user/register', async (req, res) => {
         const tempPassword = crypto.randomBytes(6).toString('base64')
         const hashedPassword = await bcrypt.hash(tempPassword, 10)
 
-        if (await UserModel.findOne({ email: req.body.email })) {
-            return res.status(400).send('Email already used')
-        } else if (await UserModel.findOne({ name: req.body.name })) {
-            return res.status(400).send('Name already used')
+        if (req.body.name && req.body.email) {
+            if (await UserModel.findOne({ email: req.body.email })) {
+                return res.status(400).send('The email or name has been used')
+            } else if (await UserModel.findOne({ name: req.body.name })) {
+                return res.status(400).send('The email or name has been used')
+            }
+        } else {
+            return res.status(400).send('Name or email should not be empty')
         }
 
         let user = {
