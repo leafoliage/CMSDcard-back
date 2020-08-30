@@ -16,7 +16,7 @@ function sendRegisterEmail(name, email, tempPassword) {
         <p>這是您的暫時密碼: 
             <strong>${tempPassword}</strong><br />
             建議您盡快修改!<br />
-            <a href="http://cmsforum.com/user/account">前往修改密碼</a>
+            請在登入後點選進入"我的帳號"頁面以修改密碼
         </p>
         <p>祝您使用愉快!</p>
         <p>CMSForum團隊 敬上</p>
