@@ -34,7 +34,7 @@ api.get('/post/select/new', authenticateToken, async (req, res) => {
 
 api.put('/post/search', authenticateToken, async (req, res) => {
     try {
-        const data = await PostModel.find({ content: { $regex: req.body.regex, $options: 'i' } }).sort({ postTime: -1 })
+        const data = await PostModel.find({$or:[{ content: { $regex: req.body.regex, $options: 'i' } },{ title: { $regex: req.body.regex, $options: 'i' } }]}).sort({ postTime: -1 })
         return res.status(200).send(data)
     } catch (err) {
         return res.status(500).send(err.message)
@@ -43,6 +43,10 @@ api.put('/post/search', authenticateToken, async (req, res) => {
 
 api.post('/post', authenticateToken, async (req, res) => {
     try {
+        if (!req.body.title || !req.body.content) {
+            return res.status(400).send('Title and content should not be empty')
+        }
+
         const user = await UserModel.findById(req.currUser.userId)
 
         let post = {
