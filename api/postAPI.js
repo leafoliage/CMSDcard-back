@@ -43,7 +43,7 @@ api.put('/post/search', authenticateToken, async (req, res) => {
 
 api.post('/post', authenticateToken, async (req, res) => {
     try {
-        if (!req.body.title || !req.body.content) {
+        if (!req.body.title || !req.body.content || !req.body.content.replace(/\s/g, '').length) {
             return res.status(400).send('Title and content should not be empty')
         }
 

@@ -27,7 +27,9 @@ api.post('/user/register', async (req, res) => {
         const tempPassword = crypto.randomBytes(6).toString('base64')
         const hashedPassword = await bcrypt.hash(tempPassword, 10)
 
-        if (req.body.name && req.body.email) {
+        let infoNotEmpty = req.body.name && req.body.email && req.body.name.replace(/\s/g, '').length && req.body.email.replace(/\s/g, '').length
+
+        if (infoNotEmpty) {
             if (await UserModel.findOne({ email: req.body.email })) {
                 return res.status(400).send('The email or name has been used')
             } else if (await UserModel.findOne({ name: req.body.name })) {
@@ -71,7 +73,11 @@ api.post('/user/login', async (req, res) => {
 api.put('/user', authenticateToken, async (req, res) => {
     try {
         if (req.body.password) {
-            req.body.password = await bcrypt.hash(req.body.password, 10)
+            if (req.body.password.replace(/\s/g, '').length) {
+                req.body.password = await bcrypt.hash(req.body.password, 10)
+            } else {
+                return res.status(400).send('Password should not be empty')
+            }
         }
 
         const user = await UserModel.findByIdAndUpdate(req.currUser.userId, req.body)
@@ -80,8 +86,12 @@ api.put('/user', authenticateToken, async (req, res) => {
         }
 
         if (req.body.name) {
-            await PostModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
-            await CommentModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
+            if (req.body.name.replace(/\s/g, '').length) {
+                await PostModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
+                await CommentModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
+            } else {
+                return res.status(400).send('Name should not be empty')
+            }
         }
 
         const data = await UserModel.findById(req.currUser.userId)
