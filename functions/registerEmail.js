@@ -4,8 +4,8 @@ const transport = mailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
     auth: {
-        user: process.env.email_add,
-        pass: process.env.email_pass,
+        user: process.env.EMAIL_ADD,
+        pass: process.env.EMAIL_PASS,
     }
 })
 
@@ -23,7 +23,7 @@ function sendRegisterEmail(name, email, tempPassword) {
     `
 
     const mailOptions = {
-        from: `"協同學生論壇" <${process.env.emailAdd}>`,
+        from: `"協同學生論壇" <${process.env.EMAIL_ADD}>`,
         to: email,
         subject: '註冊成功',
         generateTextFromHTML: true,
