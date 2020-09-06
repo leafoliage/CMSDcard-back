@@ -62,7 +62,7 @@ api.post('/user/login', async (req, res) => {
 
         if (await bcrypt.compare(req.body.password, user.password)) {
             const data = { userId: user._id }
-            const accessToken = jwt.sign(data, process.env.access_token_secret)
+            const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET)
             return res.json({ accessToken: accessToken })
         } else {
             return res.status(401).send('Login Fail')
