@@ -82,18 +82,18 @@ api.put('/user', authenticateToken, async (req, res) => {
             }
         }
 
+        if (req.body.name && !req.body.name.replace(/\s/g, '').length) {
+            return res.status(400).send('Name should not be empty')
+        }
+
         const user = await UserModel.findByIdAndUpdate(req.currUser.userId, req.body)
         if (!user) {
             return res.status(404).send('User not found')
         }
 
         if (req.body.name) {
-            if (req.body.name.replace(/\s/g, '').length) {
-                await PostModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
-                await CommentModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
-            } else {
-                return res.status(400).send('Name should not be empty')
-            }
+            await PostModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
+            await CommentModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
         }
 
         const data = await UserModel.findById(req.currUser.userId)
