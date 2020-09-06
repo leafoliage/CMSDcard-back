@@ -82,8 +82,13 @@ api.put('/user', authenticateToken, async (req, res) => {
             }
         }
 
-        if (req.body.name && !req.body.name.replace(/\s/g, '').length) {
-            return res.status(400).send('Name should not be empty')
+        if (req.body.name) {
+            if (!req.body.name.replace(/\s/g, '').length) {
+                return res.status(400).send('暱稱不能為空白')
+            }
+            else if (await UserModel.findOne({ name: req.body.name })) {
+                return res.status(400).send('無法使用此暱稱')
+            }
         }
 
         const user = await UserModel.findByIdAndUpdate(req.currUser.userId, req.body)
