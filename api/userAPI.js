@@ -47,7 +47,9 @@ api.post('/user/register', async (req, res) => {
 
         const data = await UserModel.create(user)
 
-        sendRegisterEmail(req.body.name, req.body.email, tempPassword)
+        const err = sendRegisterEmail(req.body.name, req.body.email, tempPassword)
+        if (err) return res.status(500).send('系統內部錯誤，無法註冊。')
+
         return res.status(201).send(data)
     } catch (err) {
         return res.status(500).send(err.message)

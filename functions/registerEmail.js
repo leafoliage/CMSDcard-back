@@ -31,7 +31,8 @@ function sendRegisterEmail(name, email, tempPassword) {
     }
 
     transport.sendMail(mailOptions, (err, info) => {
-        if (err) console.log('Resgister emal error: ', err)
+        if (err) return err
+        else return null
     })
 } 
 
