@@ -24,7 +24,11 @@ api.get('/user', authenticateToken, async (req, res) => {
 
 api.post('/user/register', async (req, res) => {
     try {
-        const tempPassword = crypto.randomBytes(6).toString('base64')
+        let tempPassword
+        do {
+            tempPassword = crypto.randomBytes(6).toString('base64')
+        } while(tempPassword.includes('I') || tempPassword.includes('l') || tempPassword.includes('o') || tempPassword.includes('0'))
+        
         const hashedPassword = await bcrypt.hash(tempPassword, 10)
 
         let infoNotEmpty = req.body.name && req.body.email && req.body.name.replace(/\s/g, '').length && req.body.email.replace(/\s/g, '').length
