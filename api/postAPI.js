@@ -16,7 +16,7 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
 
 api.get('/post/select/hot', authenticateToken, async (req, res) => {
     try {
-        const data = await PostModel.find().sort({ likeNum: -1 }).limit(10)
+        const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - 604800000) } }).sort({ likeNum: -1 }).limit(10)
         return res.status(200).send(data)
     } catch (err) {
         return res.status(500).send(err.message)
@@ -34,7 +34,7 @@ api.get('/post/select/new', authenticateToken, async (req, res) => {
 
 api.put('/post/search', authenticateToken, async (req, res) => {
     try {
-        const data = await PostModel.find({$or:[{ content: { $regex: req.body.regex, $options: 'i' } },{ title: { $regex: req.body.regex, $options: 'i' } }]}).sort({ postTime: -1 })
+        const data = await PostModel.find({ $or: [{ content: { $regex: req.body.regex, $options: 'i' } }, { title: { $regex: req.body.regex, $options: 'i' } }] }).sort({ postTime: -1 })
         return res.status(200).send(data)
     } catch (err) {
         return res.status(500).send(err.message)
