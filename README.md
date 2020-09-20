@@ -1,38 +1,28 @@
+# 協同學生論壇後端
+
+嗨! 這裡是協同學生論壇的後端! 協同學生論壇為一由學生創作並主導的網站。希望透過這個平台，可以帶動協同學生對校內議題的討論，培養同學們關心學校事務的風氣。
+
+## Architecture (不知道中文叫什麼XD)
+
+- Node.js
+- Express
+
 ## 開始使用
 
-請用以下指令將網站後台跑起來:
-
-`npm run dev`
-開發模式
-
-`npm start`
-正式模式
-
-## Commit 規範
-
-計錄更動(commit)時，請使用以下格式，以方便大家閱讀:
+請使用以下指令啟動後台:
 
 ``` bash
-[add] ... (commit內容) 
+npm install 
 ```
-新增功能或元素
+安裝dependencies (只有第一次需要)
 
 ``` bash
-[modify] ... (commit內容) 
+npm run dev // 開發模式
+// or
+npm start // 正式模式
 ```
-修改功能或元素
+啟動後台
 
-``` bash
-[delete] ... (commit內容) 
-```
-刪除功能或元素
+## 開發
 
-``` bash
-[other] ... (commit內容) 
-```
-其他動作 (如新增一個dependency)
-
-## 其他
-
-- 如有欲討論事項，可以至 [issue](https://github.com/BlueWhislte/CMSDcard-back/issues) 討論
-- 目前負責人: @leafoliage
+建議Contributors可以善用 [Issue](https://github.com/BlueWhislte/CMSDcard-back/issues) 針對網站設計做討論，想要做什麼新功能或抓到bug都可以在上面提出。
