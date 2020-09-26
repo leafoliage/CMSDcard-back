@@ -7,8 +7,22 @@ const api = express()
 api.get('/post/:id', authenticateToken, async (req, res) => {
     try {
         const data = await PostModel.findById(req.params.id)
-        if (!data) res.sendStatus(404)
-        return res.status(200).send(data)
+        if (!data) return res.sendStatus(404)
+
+        const likeNum = data.likeIds.length
+        const hasLiked = data.likeIds.includes(req.currUser.userId)
+
+        const returnData = {
+            _id: data._id,
+            authorName: data.authorName,
+            title: data.title,
+            content: data.content,
+            postTime: data.postTime,
+            likeNum,
+            hasLiked,
+        }
+
+        return res.status(200).send(returnData)
     } catch (err) {
         return res.status(500).send(err.message)
     }
@@ -17,7 +31,19 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
 api.get('/post/select/hot', authenticateToken, async (req, res) => {
     try {
         const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - 604800000) } }).sort({ likeNum: -1 }).limit(10)
-        return res.status(200).send(data)
+
+        let returnData = []
+        data.forEach(article => {
+            returnData.push({
+                _id: article._id,
+                authorName: article.authorName,
+                title: article.title,
+                content: article.content,
+                postTime: article.postTime
+            })
+        })
+
+        return res.status(200).send(returnData)
     } catch (err) {
         return res.status(500).send(err.message)
     }
@@ -26,7 +52,19 @@ api.get('/post/select/hot', authenticateToken, async (req, res) => {
 api.get('/post/select/new', authenticateToken, async (req, res) => {
     try {
         const data = await PostModel.find().sort({ postTime: -1 }).limit(10)
-        return res.status(200).send(data)
+
+        let returnData = []
+        data.forEach(article => {
+            returnData.push({
+                _id: article._id,
+                authorName: article.authorName,
+                title: article.title,
+                content: article.content,
+                postTime: article.postTime
+            })
+        })
+
+        return res.status(200).send(returnData)
     } catch (err) {
         return res.status(500).send(err.message)
     }
