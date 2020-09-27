@@ -28,7 +28,7 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
     }
 })
 
-api.get('/post/select/hot', authenticateToken, async (req, res) => {
+api.get('/post/select/hot', async (req, res) => {
     try {
         const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - 604800000) } }).sort({ likeNum: -1 }).limit(10)
 
