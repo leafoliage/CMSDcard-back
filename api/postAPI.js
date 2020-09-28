@@ -115,8 +115,15 @@ api.put('/post/:id', async (req, res) => {
 
 api.put('/post/like/:postId', authenticateToken, async (req, res) => {
     try {
-        const data = await PostModel.findByIdAndUpdate(req.params.postId, { $addToSet: { likeIds: req.currUser.userId } })
-        return res.status(200).send(data)
+        const data = await PostModel.findById(req.params.postId)
+
+        if (!data.likeIds.includes(req.currUser.userId)) {
+            await PostModel.findByIdAndUpdate(req.params.postId, { $addToSet: { likeIds: req.currUser.userId } })
+        }else{
+            await PostModel.findByIdAndUpdate(req.params.postId, { $pull: { likeIds: req.currUser.userId } })
+        }
+
+        return res.status(200)
     } catch (err) {
         return res.status(500).send(err.message)
     }
