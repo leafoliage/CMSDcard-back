@@ -30,7 +30,8 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
 
 api.get('/post/select/hot', async (req, res) => {
     try {
-        const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - 604800000) } }).sort({ likeNum: -1 }).limit(10)
+        const timeLitmit = 604800000 * 2
+        const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - timeLitmit) } }).sort({ likeNum: -1 }).limit(10)
 
         let returnData = []
         data.forEach(article => {
