@@ -123,7 +123,9 @@ api.put('/post/like/:postId', authenticateToken, async (req, res) => {
             await PostModel.findByIdAndUpdate(req.params.postId, { $pull: { likeIds: req.currUser.userId } })
         }
 
-        return res.status(200)
+        const returnData = await PostModel.findById(req.params.postId)
+
+        return res.status(200).send(returnData)
     } catch (err) {
         return res.status(500).send(err.message)
     }
