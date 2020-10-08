@@ -31,18 +31,28 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
 api.get('/post/select/hot', async (req, res) => {
     try {
         const timeLitmit = 604800000 * 2
-        const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - timeLitmit) } }).sort({ likeNum: -1 }).limit(10)
+        const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - timeLitmit) } })
 
         let returnData = []
+        
         data.forEach(article => {
             returnData.push({
                 _id: article._id,
                 authorName: article.authorName,
                 title: article.title,
                 content: article.content,
-                postTime: article.postTime
+                postTime: article.postTime,
+                likeNum: article.likeIds.length
             })
         })
+
+        returnData = returnData
+            .sort((former, latter) => {
+                if (former.likeNum < latter.likeNum) return 1
+                else if (former.likeNum > latter.likeNum) return -1
+                else return 0
+            })
+            .slice(0, 10)
 
         return res.status(200).send(returnData)
     } catch (err) {
@@ -119,7 +129,7 @@ api.put('/post/like/:postId', authenticateToken, async (req, res) => {
 
         if (!data.likeIds.includes(req.currUser.userId)) {
             await PostModel.findByIdAndUpdate(req.params.postId, { $addToSet: { likeIds: req.currUser.userId } })
-        }else{
+        } else {
             await PostModel.findByIdAndUpdate(req.params.postId, { $pull: { likeIds: req.currUser.userId } })
         }
 
