@@ -36,4 +36,30 @@ function sendRegisterEmail(name, email, tempPassword) {
     })
 } 
 
-module.exports = sendRegisterEmail
+function sendForgotPassEmail(name, email, tempPassword) {
+    const content = `
+        <h2>${name}，您好</h2>
+        <p>
+            您的密碼已更新為
+            <strong>${tempPassword}</strong>
+        </p>
+    `
+
+    const mailOptions = {
+        from: `"協同學生論壇" <${process.env.EMAIL_ADD}>`,
+        to: email,
+        subject: '密碼修復成功',
+        generateTextFromHTML: true,
+        html: content
+    }
+
+    transport.sendMail(mailOptions, (err, info) => {
+        if (err) return err
+        else return null
+    })
+}
+
+module.exports = {
+    sendRegisterEmail,
+    sendForgotPassEmail
+}

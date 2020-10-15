@@ -6,7 +6,7 @@ const crypto = require('crypto')
 const UserModel = require('../model/user')
 const CommentModel = require('../model/comment')
 const PostModel = require('../model/post')
-const sendRegisterEmail = require('../functions/registerEmail')
+const { sendRegisterEmail, sendForgotPassEmail } = require('../functions/emailFunctions')
 const authenticateToken = require('./auth')
 
 api.get('/user', authenticateToken, async (req, res) => {
@@ -24,11 +24,7 @@ api.get('/user', authenticateToken, async (req, res) => {
 
 api.post('/user/register', async (req, res) => {
     try {
-        let tempPassword
-        do {
-            tempPassword = crypto.randomBytes(6).toString('base64')
-        } while(tempPassword.includes('I') || tempPassword.includes('l') || tempPassword.includes('o') || tempPassword.includes('0'))
-        
+        const tempPassword = createRandomPassword()
         const hashedPassword = await bcrypt.hash(tempPassword, 10)
 
         let infoNotEmpty = req.body.name && req.body.email && req.body.name.replace(/\s/g, '').length && req.body.email.replace(/\s/g, '').length
@@ -112,10 +108,38 @@ api.put('/user', authenticateToken, async (req, res) => {
     }
 })
 
+api.put('/user/forgot/:email', async (req, res) => {
+    try {
+        const user = await UserModel.findOne({ email: req.params.email })
+        if (!user) return res.sendStatus(404)
+
+        const tempPassword = createRandomPassword()
+        const hashedPassword = await bcrypt.hash(tempPassword, 10)
+
+        const data = await UserModel.findByIdAndUpdate(user._id, { password: hashedPassword })
+
+        const err = sendForgotPassEmail(user.name, user.email, tempPassword)
+        if (err) return res.sendStatus(500)
+
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
+})
+
 api.delete('/user/:id', authenticateToken, async (req, res) => {
     return await UserModel.findByIdAndDelete(req.params.id)
         .then(data => { res.send(data) })
         .catch(err => { res.status(500).send(err.message) })
 })
+
+const createRandomPassword = () => {
+    let tempPassword
+    do {
+        tempPassword = crypto.randomBytes(6).toString('base64')
+    } while (tempPassword.includes('I') || tempPassword.includes('l') || tempPassword.includes('o') || tempPassword.includes('0'))
+
+    return tempPassword
+}
 
 module.exports = api
