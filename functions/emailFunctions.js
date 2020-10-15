@@ -43,6 +43,8 @@ function sendForgotPassEmail(name, email, tempPassword) {
             您的密碼已更新為
             <strong>${tempPassword}</strong>
         </p>
+        <p>祝您使用愉快!</p>
+        <p>CMSForum團隊 敬上</p>
     `
 
     const mailOptions = {
