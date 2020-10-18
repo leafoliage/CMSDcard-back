@@ -6,7 +6,7 @@ const crypto = require('crypto')
 const UserModel = require('../model/user')
 const CommentModel = require('../model/comment')
 const PostModel = require('../model/post')
-const { sendRegisterEmail, sendForgotPassEmail } = require('../functions/emailFunctions')
+const { sendRegisterEmail, sendForgotPassEmail, sendPassSetEmail } = require('../functions/emailFunctions')
 const authenticateToken = require('./auth')
 
 api.get('/user', authenticateToken, async (req, res) => {
@@ -74,9 +74,11 @@ api.post('/user/login', async (req, res) => {
 
 api.put('/user', authenticateToken, async (req, res) => {
     try {
+        let settingPassword = false
         if (req.body.password) {
             if (req.body.password.replace(/\s/g, '').length) {
                 req.body.password = await bcrypt.hash(req.body.password, 10)
+                settingPassword = true
             } else {
                 return res.status(400).send('Password should not be empty')
             }
@@ -100,6 +102,8 @@ api.put('/user', authenticateToken, async (req, res) => {
             await PostModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
             await CommentModel.updateMany({ authorId: req.currUser.userId }, { authorName: req.body.name })
         }
+
+        if (settingPassword) sendPassSetEmail(user.name, user.email)
 
         const data = await UserModel.findById(req.currUser.userId)
         return res.status(200).send(data)
