@@ -28,6 +28,10 @@ api.post('/comment/:postId', authenticateToken, async (req, res) => {
     try {
         const user = await UserModel.findById(req.currUser.userId)
 
+        if (!req.body.content || !req.body.content.replace(/\s/g, '').length) {
+            return res.status(400).send('Comment should not be empty')
+        }
+
         let comment = {
             authorId: req.currUser.userId,
             authorName: user.name,
