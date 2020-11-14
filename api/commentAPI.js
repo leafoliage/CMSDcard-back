@@ -57,9 +57,16 @@ api.put('/comment/:id', async (req, res) => {
     }
 })
 
-api.delete('/comment/:id', async (req, res) => {
+api.delete('/comment/:id', authenticateToken, async (req, res) => {
     try {
-        const data = await CommentModel.findByIdAndDelete(req.params.id)
+        const data = await CommentModel.findByIdAndUpdate(req.params.id, {
+            authorName: "",
+            content: `! 留言已遭刪除 !
+            此留言違反社群守則：
+            「禁止不雅、侮辱、歧視及攻擊詞語」`,
+            deleted: true
+        })
+
         if (!data) res.sendStatus(404)
         return res.status(200).send(data)
     } catch (err) {
