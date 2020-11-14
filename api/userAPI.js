@@ -131,11 +131,11 @@ api.put('/user/forgot/:email', async (req, res) => {
     }
 })
 
-api.delete('/user/:id', authenticateToken, async (req, res) => {
-    return await UserModel.findByIdAndDelete(req.params.id)
-        .then(data => { res.send(data) })
-        .catch(err => { res.status(500).send(err.message) })
-})
+// api.delete('/user/:id', authenticateToken, async (req, res) => {
+//     return await UserModel.findByIdAndDelete(req.params.id)
+//         .then(data => { res.send(data) })
+//         .catch(err => { res.status(500).send(err.message) })
+// })
 
 const createRandomPassword = () => {
     let tempPassword

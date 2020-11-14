@@ -47,15 +47,15 @@ api.post('/comment/:postId', authenticateToken, async (req, res) => {
     }
 })
 
-api.put('/comment/:id', async (req, res) => {
-    try {
-        const data = await CommentModel.findByIdAndUpdate(req.params.id, req.body)
-        if (!data) res.sendStatus(404)
-        return res.status(200).send(data)
-    } catch (err) {
-        return res.status(500).send(err.message)
-    }
-})
+// api.put('/comment/:id', async (req, res) => {
+//     try {
+//         const data = await CommentModel.findByIdAndUpdate(req.params.id, req.body)
+//         if (!data) res.sendStatus(404)
+//         return res.status(200).send(data)
+//     } catch (err) {
+//         return res.status(500).send(err.message)
+//     }
+// })
 
 api.delete('/comment/:id', authenticateToken, async (req, res) => {
     try {

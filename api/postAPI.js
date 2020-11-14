@@ -141,13 +141,13 @@ api.put('/post/like/:postId', authenticateToken, async (req, res) => {
     }
 })
 
-api.delete('/post/:id', authenticateToken, async (req, res) => {
-    try {
-        const data = await PostModel.findByIdAndDelete(req.params.id)
-        return res.status(200).send(data)
-    } catch (err) {
-        return res.status(500).send(err.message)
-    }
-})
+// api.delete('/post/:id', authenticateToken, async (req, res) => {
+//     try {
+//         const data = await PostModel.findByIdAndDelete(req.params.id)
+//         return res.status(200).send(data)
+//     } catch (err) {
+//         return res.status(500).send(err.message)
+//     }
+// })
 
 module.exports = api
