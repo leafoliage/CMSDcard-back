@@ -52,7 +52,7 @@ api.get('/post/select/hot', async (req, res) => {
                 else if (former.likeNum > latter.likeNum) return -1
                 else return 0
             })
-            .slice(0, 3)
+            .slice(0, 10)
 
         return res.status(200).send(returnData)
     } catch (err) {
