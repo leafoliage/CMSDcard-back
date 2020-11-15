@@ -20,6 +20,7 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
             postTime: data.postTime,
             likeNum,
             hasLiked,
+            isDeleted: data.isDeleted
         }
 
         return res.status(200).send(returnData)
@@ -42,7 +43,8 @@ api.get('/post/select/hot', async (req, res) => {
                 title: article.title,
                 content: article.content,
                 postTime: article.postTime,
-                likeNum: article.likeIds.length
+                likeNum: article.likeIds.length,
+                isDeleted: article.isDeleted
             })
         })
 
@@ -71,7 +73,8 @@ api.get('/post/select/new', authenticateToken, async (req, res) => {
                 authorName: article.authorName,
                 title: article.title,
                 content: article.content,
-                postTime: article.postTime
+                postTime: article.postTime,
+                isDeleted: article.isDeleted
             })
         })
 
@@ -141,13 +144,16 @@ api.put('/post/like/:postId', authenticateToken, async (req, res) => {
     }
 })
 
-// api.delete('/post/:id', authenticateToken, async (req, res) => {
-//     try {
-//         const data = await PostModel.findByIdAndDelete(req.params.id)
-//         return res.status(200).send(data)
-//     } catch (err) {
-//         return res.status(500).send(err.message)
-//     }
-// })
+api.delete('/post/:id', authenticateToken, async (req, res) => {
+    try {
+        const data = await PostModel.findByIdAndUpdate(req.params.id, {
+            isDeleted: true
+        })
+
+        return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
+})
 
 module.exports = api

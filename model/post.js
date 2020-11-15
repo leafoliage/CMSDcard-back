@@ -8,7 +8,8 @@ const PostSchema = new mongoose.Schema({
     title: { type: String },
     content: { type: String },
     postTime: { type: Date },
-    likeIds: { type: [ObjectId] }
+    likeIds: { type: [ObjectId] },
+    isDeleted: { type: Boolean, default: false }
 })
 
 module.exports = mongoose.model('Post', PostSchema)
