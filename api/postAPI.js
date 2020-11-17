@@ -15,8 +15,8 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
         const returnData = {
             _id: data._id,
             authorName: data.authorName,
-            title: data.title,
-            content: data.content,
+            title: data.isDeleted ? null : data.title,
+            content: data.isDeleted ? null : data.content,
             postTime: data.postTime,
             likeNum,
             hasLiked,
