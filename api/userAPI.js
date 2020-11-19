@@ -6,7 +6,7 @@ const crypto = require('crypto')
 const UserModel = require('../model/user')
 const CommentModel = require('../model/comment')
 const PostModel = require('../model/post')
-const { sendRegisterEmail, sendForgotPassEmail, sendPassSetEmail } = require('../functions/emailFunctions')
+const { sendRegisterEmail, sendForgotPassEmail, sendPassSetEmail, sendCustomEmail } = require('../functions/emailFunctions')
 const authenticateToken = require('./auth')
 
 api.get('/user', authenticateToken, async (req, res) => {
@@ -126,6 +126,21 @@ api.put('/user/forgot/:email', async (req, res) => {
         if (err) return res.sendStatus(500)
 
         return res.status(200).send(data)
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
+})
+
+api.post('/user/sendmail/general', async (req, res)=>{
+    try {
+        const users = await UserModel.find()
+
+        users.forEach(user => {
+            const err = sendCustomEmail(user.name, user.email, req.body.title, req.body.text)
+            if (err) return res.status(500).send(err.message)
+        })
+
+        return res.sendStatus(200)
     } catch (err) {
         return res.status(500).send(err.message)
     }
