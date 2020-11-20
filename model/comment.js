@@ -7,7 +7,8 @@ const CommentSchema = new mongoose.Schema({
     authorName: { type: String },
     targetPost: { type: ObjectId, required: true },
     content: { type: String, required: true },
-    postTime: { type: Date }
+    postTime: { type: Date },
+    isDeleted: { type: Boolean, default: false }
 })
 
 module.exports = mongoose.model('Comment', CommentSchema)
