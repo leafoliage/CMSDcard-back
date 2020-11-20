@@ -85,33 +85,8 @@ function sendPassSetEmail(name, email) {
     })
 }
 
-function sendCustomEmail(name, email, title, text) {
-    const content = `
-        <h2>${name}，您好</h2>
-        <p>
-            ${text}
-        </p>
-        <p>祝您使用愉快!</p>
-        <p>CMSForum團隊 敬上</p>
-    `
-
-    const mailOptions = {
-        from: `"協同學生論壇" <${process.env.EMAIL_ADD}>`,
-        to: email,
-        subject: title,
-        generateTextFromHTML: true,
-        html: content
-    }
-
-    transport.sendMail(mailOptions, (err, info) => {
-        if (err) return err
-        else return null
-    })
-}
-
 module.exports = {
     sendRegisterEmail,
     sendForgotPassEmail,
-    sendPassSetEmail,
-    sendCustomEmail
+    sendPassSetEmail
 }
