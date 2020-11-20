@@ -17,6 +17,15 @@ api.get('/comment/single/:id', async (req, res) => {
 api.get('/comment/post/:postId', authenticateToken, async (req, res) => {
     try {
         const data = await CommentModel.find({ targetPost: req.params.postId })
+
+        data.forEach(comment => {
+            if (comment.isDeleted) {
+                comment.authorId = null,
+                comment.authorName = null,
+                comment.content = null
+            }
+        })
+
         if (!data) res.sendStatus(404)
         return res.status(200).send(data)
     } catch (err) {
