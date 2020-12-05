@@ -35,7 +35,7 @@ api.get('/post/select/hot', async (req, res) => {
         const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - timeLimit) } })
 
         let returnData = []
-        
+
         data.forEach(article => {
             returnData.push({
                 _id: article._id,
@@ -87,10 +87,22 @@ api.get('/post/select/new', authenticateToken, async (req, res) => {
 api.put('/post/search', authenticateToken, async (req, res) => {
     try {
         if (!req.body.regex || !req.body.regex.replace(/\s/g, '').length) {
-            return res.status(400).send('Title and content should not be empty')
+            return res.status(400).send('Should not search empty')
         }
 
-        const data = await PostModel.find({ $or: [{ content: { $regex: req.body.regex, $options: 'i' } }, { title: { $regex: req.body.regex, $options: 'i' } }] }).sort({ postTime: -1 })
+        const searchQuery = { 
+            $or: [
+                { content: { $regex: req.body.regex, $options: 'i' } }, 
+                { title: { $regex: req.body.regex, $options: 'i' } }
+            ] 
+        }
+        const options = {
+            page: req.body.page || 1,
+            limit: 10,
+            sort: { postTime: -1 }
+        }
+
+        const data = await PostModel.paginate(searchQuery, options)
         return res.status(200).send(data)
     } catch (err) {
         return res.status(500).send(err.message)
