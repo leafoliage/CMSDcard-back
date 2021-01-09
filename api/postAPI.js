@@ -62,7 +62,7 @@ api.get('/post/select/hot', async (req, res) => {
     }
 })
 
-api.get('/post/select/new', authenticateToken, async (req, res) => {
+api.get('/post/select/new', async (req, res) => {
     try {
         const data = await PostModel.find().sort({ postTime: -1 }).limit(10)
 
