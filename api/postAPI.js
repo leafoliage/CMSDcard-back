@@ -20,7 +20,8 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
             postTime: data.postTime,
             likeNum,
             hasLiked,
-            isDeleted: data.isDeleted
+            isDeleted: data.isDeleted,
+            violationCode: data.violationCode
         }
 
         return res.status(200).send(returnData)
