@@ -32,7 +32,7 @@ api.get('/post/:id', authenticateToken, async (req, res) => {
 api.get('/post/select/hot', async (req, res) => {
     try {
         const timeLimit = 604800000
-        const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - timeLimit) } })
+        const data = await PostModel.find({ postTime: { $gte: new Date(new Date() - timeLimit) }, isDeleted: false })
 
         let returnData = []
 
@@ -54,7 +54,7 @@ api.get('/post/select/hot', async (req, res) => {
                 else if (former.likeNum > latter.likeNum) return -1
                 else return 0
             })
-            .slice(0, 10)
+            .slice(0, 3)
 
         return res.status(200).send(returnData)
     } catch (err) {
@@ -145,6 +145,7 @@ api.put('/post/:id', async (req, res) => {
 api.put('/post/like/:postId', authenticateToken, async (req, res) => {
     try {
         const data = await PostModel.findById(req.params.postId)
+        if (data.isDeleted) return res.sendStatus(200)
 
         if (!data.likeIds.includes(req.currUser.userId)) {
             await PostModel.findByIdAndUpdate(req.params.postId, { $addToSet: { likeIds: req.currUser.userId } })
