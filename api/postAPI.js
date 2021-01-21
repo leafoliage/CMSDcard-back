@@ -134,15 +134,6 @@ api.post('/post', authenticateToken, async (req, res) => {
     }
 })
 
-api.put('/post/:id', async (req, res) => {
-    try {
-        const data = await PostModel.findByIdAndUpdate(req.params.id, req.body)
-        return res.status(200).send(data)
-    } catch (err) {
-        return res.status(500).send(err.message)
-    }
-})
-
 api.put('/post/like/:postId', authenticateToken, async (req, res) => {
     try {
         const data = await PostModel.findById(req.params.postId)
@@ -157,18 +148,6 @@ api.put('/post/like/:postId', authenticateToken, async (req, res) => {
         const returnData = await PostModel.findById(req.params.postId)
 
         return res.status(200).send(returnData)
-    } catch (err) {
-        return res.status(500).send(err.message)
-    }
-})
-
-api.delete('/post/:id', authenticateToken, async (req, res) => {
-    try {
-        const data = await PostModel.findByIdAndUpdate(req.params.id, {
-            isDeleted: true
-        })
-
-        return res.status(200).send(data)
     } catch (err) {
         return res.status(500).send(err.message)
     }
